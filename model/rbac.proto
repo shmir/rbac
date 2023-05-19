@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package rbac;
+
+service RBACService {
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {}
+  rpc CanUserAccessProject(CanUserAccessProjectRequest) returns (CanUserAccessProjectResponse) {}
+}
+
+message CreateOrganizationRequest {
+  string name = 1;
+  repeated User users = 2;
+  repeated Project project = 3;
+}
+
+message CreateOrganizationResponse {
+  Organization organization = 1;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  repeated Organization organization = 2;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message CreateProjectRequest {
+  string name = 1;
+  Organization organization = 2;
+}
+
+message CreateProjectResponse {
+  Project project = 1;
+}
+
+message CanUserAccessProjectRequest {
+  oneof userParam {
+    int32 userId = 1;
+    User user = 2;
+  }
+  oneof projectParam {
+    int32 projectId = 3;
+    Project project = 4;
+  }
+}
+
+message CanUserAccessProjectResponse {
+  bool canAccess = 1;
+}
+
+message Organization {
+  int32 id = 1;
+  string name = 2;
+  repeated int32 users = 3;
+  repeated int32 projects = 4;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  repeated int32 organizations = 3;
+}
+
+message Project {
+  int32 id = 1;
+  string name = 2;
+  int32 organization = 3;
+}
